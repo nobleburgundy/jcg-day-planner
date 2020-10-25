@@ -8,7 +8,6 @@
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100&family=Roboto+Slab&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="./assets/style.css" />
     <script src="https://kit.fontawesome.com/b34966f7b7.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
@@ -17,13 +16,79 @@
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link rel="stylesheet" href="./assets/style.css" />
     <title>Work Day Planner</title>
 </head>
 
 <body>
-    <h1>Work Day Planner</h1>
-    <main class="container">
+    <main class="container-lg">
+        <article class="jumbotron">
+            <h1>Work Day Planner</h1>
+            <p class="lead">
+                A simple work day planner to manage your busy work day.
+            </p>
+            <hr />
+            <p>Todays Date: <span id="current-date"></span></p>
+        </article>
+        <article>
+            <table class="table">
+                <thead>
+                    <th>Time</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </thead>
+                <tbody id="time-table-body">
+                    <tr class="table-secondary">
+                        <td>9 AM</td>
+                        <td></td>
+                        <td></i></td>
+                    </tr>
+                    <tr class="table-danger">
+                        <td>10 AM</td>
+                        <td>Stand Up Meeting</td>
+                        <td></td>
+                    </tr>
+                    <tr class="table-success">
+                        <td>11 AM</td>
+                        <td></td>
+                        <td><i class="fas fa-edit"></i></td>
+                    </tr>
+                    <tr class="table-info">
+                        <td>12 PM</td>
+                        <td>Lunch - No Meetings Allowed</td>
+                        <td><i class="fas fa-edit"></i><i class="fas fa-trash"></i></td>
+                    </tr>
+                    <tr class="table-success">
+                        <td>1 PM</td>
+                        <td><input type="text" class="calendar-input" /></td>
+                        <td></i><i class="fas fa-save"></i><i class="far fa-times-circle"></i></td>
+                    </tr>
+                    <tr class="table-success">
+                        <td>2 PM</td>
+                        <td></td>
+                        <td><i class="fas fa-edit"></td>
+                    </tr>
+                    <tr class="table-info">
+                        <td>3 PM</td>
+                        <td>UX Design Weekly Checkin</td>
+                        <td><i class="fas fa-edit"></i><i class="fas fa-trash"></i></td>
+                    </tr>
+                    <tr class="table-info">
+                        <td>4 PM</td>
+                        <td>One on One</td>
+                        <td><i class="fas fa-edit"></i><i class="fas fa-trash"></i></td>
+                    </tr>
+                    <tr class="table-info">
+                        <td>5 PM</td>
+                        <td>Leadership Summit on Feline Superiority</td>
+                        <td><i class="fas fa-edit"></i><i class="fas fa-trash"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+
     </main>
+    <script src="./assets/planner.js"></script>
 </body>
 
 </html>
