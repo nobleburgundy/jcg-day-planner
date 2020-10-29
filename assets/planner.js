@@ -33,6 +33,10 @@ function setRowClassesBasedOnTime() {
       // green if open, blue if filled
       if (tdElement.text()) {
         $(`tr#${workHoursArray[i]}`).addClass(futureHourFilledClass);
+        // add delete icon if there already is a meeting
+        let icon = $("<i>");
+        icon.addClass("fas fa-trash");
+        $(`tr#${workHoursArray[i]} td:nth-child(3)`).append(icon);
       } else {
         console.log("empty");
         $(`tr#${workHoursArray[i]}`).addClass(futureHourEmptyClass);
