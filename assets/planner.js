@@ -38,12 +38,26 @@ function setRowClassesBasedOnTime() {
         icon.addClass("fas fa-trash");
         $(`tr#${workHoursArray[i]} td:nth-child(3)`).append(icon);
       } else {
-        console.log("empty");
         $(`tr#${workHoursArray[i]}`).addClass(futureHourEmptyClass);
       }
     }
   }
 }
+
+let meetingElements = document.querySelector("td.meeting-description");
+
+meetingElements.addEventListener("click", function (event) {
+  let target = event.target;
+  console.log(target);
+});
+
+$(".meeting-description").on("input", function (event) {
+  if ($(this).next().children(".fa-save").length < 1) {
+    let icon = $("<i>");
+    icon.addClass("fas fa-save");
+    $(this).next().append(icon);
+  }
+});
 
 let mockPlanObject = [
   {

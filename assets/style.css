@@ -18,3 +18,7 @@ tr :nth-child(3) {
 .filled {
     background-color: #52b788;
 }
+
+.fas {
+    padding-left: 1rem;
+}
