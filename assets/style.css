@@ -3,18 +3,18 @@ tr :nth-child(3) {
     text-align: center;
 }
 
-.info {
-    background-color: #95d5b2;
+.past {
+    background-color: #adb5bd;
 }
 
-.jumbotron, .danger {
+.jumbotron, .current {
     background-color: #7bdff2;
 }
 
-.success {
-    background-color: #52b788;
+.empty {
+    background-color: #95d5b2;
 }
 
-.secondary {
-    background-color: #adb5bd;
+.filled {
+    background-color: #52b788;
 }

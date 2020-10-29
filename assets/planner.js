@@ -11,10 +11,10 @@ $(document).ready(function () {
 });
 
 function setRowClassesBasedOnTime() {
-  let pastHoursClass = "secondary";
-  let currentHourClass = "danger";
-  let futureHourEmptyClass = "info";
-  let futureHourFilledClass = "success";
+  let pastHoursClass = "past";
+  let currentHourClass = "current";
+  let futureHourEmptyClass = "empty";
+  let futureHourFilledClass = "filled";
   // For comparison
   let currentTimeInt = parseInt(currentTime);
   // Short Circuit for Testing...
