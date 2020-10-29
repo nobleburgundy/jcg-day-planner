@@ -1,10 +1,20 @@
-.calendar-input {
-    background-color: transparent;
-    border: 1px solid black;
-    height: 100%;
-    width: 100%;
+/* Center the Action Column */
+tr :nth-child(3) {
+    text-align: center;
 }
 
-.fas {
-    padding-right: 1rem;
+.info {
+    background-color: #95d5b2;
+}
+
+.jumbotron, .danger {
+    background-color: #7bdff2;
+}
+
+.success {
+    background-color: #52b788;
+}
+
+.secondary {
+    background-color: #adb5bd;
 }

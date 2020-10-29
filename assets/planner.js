@@ -1,3 +1,6 @@
+let workHoursArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+let currentTime = moment().format("H");
+
 $(document).ready(function () {
   setRowClassesBasedOnTime();
 
@@ -7,17 +10,15 @@ $(document).ready(function () {
   }, 1000);
 });
 
-let workHoursArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
-let currentTime = moment().format("H");
-// let currentTime = 6; // just used for testing
-
 function setRowClassesBasedOnTime() {
-  let pastHoursClass = "table-secondary";
-  let currentHourClass = "table-danger";
-  let futureHourEmptyClass = "table-success";
-  let futureHourFilledClass = "table-info";
+  let pastHoursClass = "secondary";
+  let currentHourClass = "danger";
+  let futureHourEmptyClass = "info";
+  let futureHourFilledClass = "success";
   // For comparison
   let currentTimeInt = parseInt(currentTime);
+  // Short Circuit for Testing...
+  //   currentTimeInt = 10;
 
   for (let i = 0; i < workHoursArray.length; i++) {
     if (workHoursArray[i] < currentTimeInt) {
@@ -27,6 +28,9 @@ function setRowClassesBasedOnTime() {
     } else {
       // Future hours, now check if there is a meeting
       let tdElement = $(`tr#${workHoursArray[i]} td:nth-child(2)`);
+      // make it editable
+      tdElement.attr("contenteditable", true);
+      // green if open, blue if filled
       if (tdElement.text()) {
         $(`tr#${workHoursArray[i]}`).addClass(futureHourFilledClass);
       } else {
