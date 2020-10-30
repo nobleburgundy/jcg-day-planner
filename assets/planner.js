@@ -2,11 +2,12 @@ let workHoursArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 let currentTime = moment().format("H");
 
 $(document).ready(function () {
+  loadMeetingsFromLocalStorage();
   setRowClassesBasedOnTime();
 
   // Show current date and current time
   setInterval(() => {
-    $("#current-date").text(moment().format("MMMM Do YYYY, h:mm:ss a"));
+    $("#current-date").text(moment().format("MMMM Do YYYY, h:mm a"));
   }, 1000);
 });
 
@@ -17,49 +18,78 @@ function setRowClassesBasedOnTime() {
   let futureHourFilledClass = "filled";
   // For comparison
   let currentTimeInt = parseInt(currentTime);
-  // Short Circuit for Testing...
-  //   currentTimeInt = 10;
 
-  for (let i = 0; i < workHoursArray.length; i++) {
-    if (workHoursArray[i] < currentTimeInt) {
-      $(`tr#${workHoursArray[i]}`).addClass(pastHoursClass);
-    } else if (workHoursArray[i] === currentTimeInt) {
-      $(`tr#${workHoursArray[i]}`).addClass(currentHourClass);
+  // Short Circuit for Testing...
+  currentTimeInt = 10;
+
+  for (let i = 0; i < meetingDataArray.length; i++) {
+    if (meetingDataArray[i].time < currentTimeInt) {
+      $(`tr#${meetingDataArray[i].time}`).addClass(pastHoursClass);
+    } else if (meetingDataArray[i].time === currentTimeInt) {
+      $(`tr#${meetingDataArray[i].time}`).addClass(currentHourClass);
     } else {
       // Future hours, now check if there is a meeting
-      let tdElement = $(`tr#${workHoursArray[i]} td:nth-child(2)`);
+      let tdElement = $(`tr#${meetingDataArray[i].time} td:nth-child(2)`);
       // make it editable
       tdElement.attr("contenteditable", true);
       // green if open, blue if filled
       if (tdElement.text()) {
-        $(`tr#${workHoursArray[i]}`).addClass(futureHourFilledClass);
+        $(`tr#${meetingDataArray[i].time}`).addClass(futureHourFilledClass);
         // add delete icon if there already is a meeting
         let icon = $("<i>");
         icon.addClass("fas fa-trash");
-        $(`tr#${workHoursArray[i]} td:nth-child(3)`).append(icon);
+        $(`tr#${meetingDataArray[i].time} td:nth-child(3)`).append(icon);
       } else {
-        $(`tr#${workHoursArray[i]}`).addClass(futureHourEmptyClass);
+        $(`tr#${meetingDataArray[i].time}`).addClass(futureHourEmptyClass);
       }
     }
   }
 }
 
-let meetingElements = document.querySelector("td.meeting-description");
-
-meetingElements.addEventListener("click", function (event) {
-  let target = event.target;
-  console.log(target);
+$(".meeting-description").on("input", function () {
+  $(this).next().children(".fa-save").removeClass("d-none");
 });
 
-$(".meeting-description").on("input", function (event) {
-  if ($(this).next().children(".fa-save").length < 1) {
-    let icon = $("<i>");
-    icon.addClass("fas fa-save");
-    $(this).next().append(icon);
+// listen for save click
+$(".fa-save").on("click", function () {
+  let cellContents = $(this).parent().prev().text();
+  let timeBlock = $(this).parent().prevAll(".time").text();
+  let timeBlockInt = parseInt(timeBlock);
+  // convert to 24 time
+  if (timeBlockInt < 9) {
+    timeBlockInt += 12;
   }
+  // update the object
+  meetingDataArray[timeBlockInt - meetingDataArray.length].description = cellContents;
+  console.log(meetingDataArray);
+  // save to localStorage
+  saveMeetingsToLocalStorage();
 });
 
-let mockPlanObject = [
+function saveMeetingsToLocalStorage() {
+  let meetingObjectJSON = JSON.stringify(meetingDataArray);
+  localStorage.setItem("work-day-planner", meetingObjectJSON);
+}
+
+function loadMeetingsFromLocalStorage() {
+  let localMeetingData = JSON.parse(localStorage.getItem("work-day-planner"));
+  console.log(localMeetingData);
+  if (!localMeetingData) {
+    // No data present, so just set to the empty meetingDataArray
+    localMeetingData = meetingDataArray;
+  } else {
+    // update the meetinDataArray with the locally stored data
+    meetingDataArray = localMeetingData;
+  }
+
+  // write data to the page
+  for (let index = 0; index < localMeetingData.length; index++) {
+    // Select the element with ID = time and select the child with class .meeting-description
+    $(`#${localMeetingData[index].time}`).children(".meeting-description").text(localMeetingData[index].description);
+  }
+}
+
+let meetingDataArray = [
   {
     time: 9,
     description: "",
@@ -74,7 +104,7 @@ let mockPlanObject = [
   },
   {
     time: 12,
-    description: "Lunch - No Meetings Allowed",
+    description: "",
   },
   {
     time: 13,
@@ -82,11 +112,11 @@ let mockPlanObject = [
   },
   {
     time: 14,
-    description: "UX Design Check-in",
+    description: "",
   },
   {
     time: 15,
-    description: "1on1 - 007",
+    description: "",
   },
   {
     time: 16,
@@ -94,6 +124,6 @@ let mockPlanObject = [
   },
   {
     time: 17,
-    description: "Happy Hour!",
+    description: "",
   },
 ];
