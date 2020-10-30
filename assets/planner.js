@@ -1,4 +1,3 @@
-let workHoursArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 let currentTime = moment().format("H");
 
 $(document).ready(function () {
@@ -53,20 +52,32 @@ $(".fa-save").on("click", function () {
   let cellContents = $(this).parent().prev().text();
   let timeBlock = $(this).parent().prevAll(".time").text();
   let timeBlockInt = parseInt(timeBlock);
+
   // convert to 24 time
   if (timeBlockInt < 9) {
     timeBlockInt += 12;
   }
+
   // update the object
   meetingDataArray[timeBlockInt - meetingDataArray.length].description = cellContents;
-  // update classes
-  $(this).parent().parent().addClass("filled").removeClass("empty");
-  // Hide icon
-  $(this).addClass("d-none");
-  // Show trash icon
-  $(this).nextAll(".fa-trash").removeClass("d-none");
   // save to localStorage
   saveMeetingsToLocalStorage();
+
+  // update classes
+  if (cellContents.length > 0) {
+    $(this).parent().parent().addClass("filled").removeClass("empty");
+    // Hide icon
+    $(this).addClass("d-none");
+    // Show trash icon
+    $(this).nextAll(".fa-trash").removeClass("d-none");
+  } else {
+    // If user clears the field and save, treat it like delete
+    $(this).parent().parent().removeClass("filled").addClass("empty");
+    // Hide icon
+    $(this).addClass("d-none");
+    // Hide trash icon
+    $(this).nextAll(".fa-trash").addClass("d-none");
+  }
 });
 
 function saveMeetingsToLocalStorage() {
@@ -98,6 +109,8 @@ function loadMeetingsFromLocalStorage() {
     // clear the field
     $(this).parent().prevAll(".meeting-description").text("");
     $(this).parent().parent().addClass("empty").removeClass("filled");
+    // Hide the save button as well if it's there (user clears field and clicks delete);
+    $(this).prevAll(".fa-save").addClass("d-none");
     $(this).addClass("d-none");
     // update localStorage
     saveMeetingsToLocalStorage();
