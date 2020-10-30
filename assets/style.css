@@ -22,3 +22,11 @@ tr :nth-child(3) {
 .fas {
     padding-left: 1rem;
 }
+
+.fas:hover {
+    cursor: pointer;
+}
+
+.fas:active {
+    opacity: 0.7;
+}
