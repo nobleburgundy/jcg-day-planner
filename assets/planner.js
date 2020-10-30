@@ -1,4 +1,5 @@
 let currentTime = moment().format("H");
+let startTime = 9;
 
 $(document).ready(function () {
   loadMeetingsFromLocalStorage();
@@ -43,9 +44,28 @@ function setRowClassesBasedOnTime() {
   }
 }
 
-$(".meeting-description").on("input", function () {
-  $(this).next().children(".fa-save").removeClass("d-none");
-});
+function saveMeetingsToLocalStorage() {
+  let meetingObjectJSON = JSON.stringify(meetingDataArray);
+  localStorage.setItem("work-day-planner", meetingObjectJSON);
+}
+
+function loadMeetingsFromLocalStorage() {
+  let localMeetingData = JSON.parse(localStorage.getItem("work-day-planner"));
+  console.log(localMeetingData);
+  if (!localMeetingData) {
+    // No data present, so just set to the empty meetingDataArray
+    localMeetingData = meetingDataArray;
+  } else {
+    // update the meetinDataArray with the locally stored data
+    meetingDataArray = localMeetingData;
+  }
+
+  // write data to the page
+  for (let index = 0; index < localMeetingData.length; index++) {
+    // Select the element with ID = time and select the child with class .meeting-description
+    $(`#${localMeetingData[index].time}`).children(".meeting-description").text(localMeetingData[index].description);
+  }
+}
 
 // listen for save click
 $(".fa-save").on("click", function () {
@@ -80,48 +100,37 @@ $(".fa-save").on("click", function () {
   }
 });
 
-function saveMeetingsToLocalStorage() {
-  let meetingObjectJSON = JSON.stringify(meetingDataArray);
-  localStorage.setItem("work-day-planner", meetingObjectJSON);
-}
+$(document).on("click", ".fa-trash", function () {
+  let rowElement = $(this).parent().parent();
+  let meetingCell = $(this).parent().prevAll(".meeting-description");
 
-function loadMeetingsFromLocalStorage() {
-  let localMeetingData = JSON.parse(localStorage.getItem("work-day-planner"));
-  console.log(localMeetingData);
-  if (!localMeetingData) {
-    // No data present, so just set to the empty meetingDataArray
-    localMeetingData = meetingDataArray;
-  } else {
-    // update the meetinDataArray with the locally stored data
-    meetingDataArray = localMeetingData;
+  // Remove this item's parent's sibling
+  let timeBlock = $(this).parent().prevAll(".time").text();
+  let timeBlockInt = parseInt(timeBlock);
+
+  // convert to 24 time if less than start time
+  if (timeBlockInt < startTime) {
+    timeBlockInt += 12;
   }
+  // update the object
+  meetingDataArray[timeBlockInt - meetingDataArray.length].description = "";
 
-  $(document).on("click", ".fa-trash", function () {
-    // Remove this item's parents sibling
-    let timeBlock = $(this).parent().prevAll(".time").text();
-    let timeBlockInt = parseInt(timeBlock);
-    // convert to 24 time
-    if (timeBlockInt < 9) {
-      timeBlockInt += 12;
-    }
-    // update the object
-    meetingDataArray[timeBlockInt - meetingDataArray.length].description = "";
-    // clear the field
-    $(this).parent().prevAll(".meeting-description").text("");
-    $(this).parent().parent().addClass("empty").removeClass("filled");
-    // Hide the save button as well if it's there (user clears field and clicks delete);
-    $(this).prevAll(".fa-save").addClass("d-none");
-    $(this).addClass("d-none");
-    // update localStorage
-    saveMeetingsToLocalStorage();
-  });
+  // update localStorage
+  saveMeetingsToLocalStorage();
 
-  // write data to the page
-  for (let index = 0; index < localMeetingData.length; index++) {
-    // Select the element with ID = time and select the child with class .meeting-description
-    $(`#${localMeetingData[index].time}`).children(".meeting-description").text(localMeetingData[index].description);
-  }
-}
+  // clear the field
+  meetingCell.text("");
+  rowElement.addClass("empty").removeClass("filled");
+
+  // Hide the save button as well if it's there (user clears field and clicks delete);
+  $(this).prevAll(".fa-save").addClass("d-none");
+  $(this).addClass("d-none");
+});
+
+// Listen for input on the meeting description cell and show the save button when there's input
+$(".meeting-description").on("input", function () {
+  $(this).next().children(".fa-save").removeClass("d-none");
+});
 
 let meetingDataArray = [
   {
