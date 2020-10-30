@@ -35,10 +35,8 @@ function setRowClassesBasedOnTime() {
       // green if open, blue if filled
       if (tdElement.text()) {
         $(`tr#${meetingDataArray[i].time}`).addClass(futureHourFilledClass);
-        // add delete icon if there already is a meeting
-        let icon = $("<i>");
-        icon.addClass("fas fa-trash");
-        $(`tr#${meetingDataArray[i].time} td:nth-child(3)`).append(icon);
+        // show delete icon if there already is a meeting
+        $(`tr#${meetingDataArray[i].time} td:nth-child(3)`).children(".fa-trash").removeClass("d-none");
       } else {
         $(`tr#${meetingDataArray[i].time}`).addClass(futureHourEmptyClass);
       }
@@ -101,7 +99,6 @@ function loadMeetingsFromLocalStorage() {
     $(this).parent().prevAll(".meeting-description").text("");
     $(this).parent().parent().addClass("empty").removeClass("filled");
     $(this).addClass("d-none");
-    // $(this).parent().parent().addClass("empty");
     // update localStorage
     saveMeetingsToLocalStorage();
   });
