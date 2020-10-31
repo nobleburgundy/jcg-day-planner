@@ -18,6 +18,7 @@ function setRowClassesBasedOnTime() {
   let futureHourFilledClass = "filled";
   // For comparison
   let currentTimeInt = parseInt(currentTime);
+  console.log(currentTimeInt);
 
   for (let i = 0; i < meetingDataArray.length; i++) {
     if (meetingDataArray[i].time < currentTimeInt) {
@@ -97,36 +98,59 @@ $(".fa-save").on("click", function () {
 });
 
 $(document).on("click", ".fa-trash", function () {
-  let rowElement = $(this).parent().parent();
-  let meetingCell = $(this).parent().prevAll(".meeting-description");
-
-  // Remove this item's parent's sibling
-  let timeBlock = $(this).parent().prevAll(".time").text();
-  let timeBlockInt = parseInt(timeBlock);
-
-  // convert to 24 time if less than start time
-  if (timeBlockInt < startTime) {
-    timeBlockInt += 12;
-  }
-  // update the object
-  meetingDataArray[timeBlockInt - meetingDataArray.length].description = "";
-
-  // update localStorage
-  saveMeetingsToLocalStorage();
-
-  // clear the field
-  meetingCell.text("");
-  rowElement.addClass("empty").removeClass("filled");
-
-  // Hide the save button as well if it's there (user clears field and clicks delete);
-  $(this).prevAll(".fa-save").addClass("d-none");
-  $(this).addClass("d-none");
+  let time = $(this).parent().prevAll(".time").text();
+  deleteRow(time);
 });
 
 // Listen for input on the meeting description cell and show the save button when there's input
 $(".meeting-description").on("input", function () {
   $(this).next().children(".fa-save").removeClass("d-none");
+  // Listen for Enter key and save
+  $(this).on("keypress", function (event) {
+    if (event.code === "Enter") {
+      event.preventDefault();
+      // Save
+      let timeRow = $(this).parent().attr("id");
+      saveMeeting(timeRow, $(this).text());
+      // Update class
+      $(this).next().children(".fa-save").addClass("d-none");
+      $(this).next().children(".fa-trash").removeClass("d-none");
+      $(this).parent().addClass("filled").removeClass("empty");
+    }
+  });
 });
+
+function deleteRow(time) {
+  // convert to int
+  time = parseInt(time);
+  // convert time to 24 hour
+  if (time < startTime) {
+    time += 12;
+  }
+  // store the row
+  let rowEl = $(`#${time}`);
+  // clear the text
+  rowEl.children(".meeting-description").text("");
+  // update the class of the row
+  rowEl.addClass("empty").removeClass("filled");
+  // hide icon
+  rowEl.children(".action").children(".fa-trash").addClass("d-none");
+  // Update the object
+  meetingDataArray[time - meetingDataArray.length].description = "";
+  // save to localStorage
+  saveMeetingsToLocalStorage();
+}
+
+$(".time").on("dblclick", function () {
+  currentTime = parseInt($(this).text());
+  setRowClassesBasedOnTime();
+});
+
+function saveMeeting(timeInt, meetingText) {
+  timeInt = parseInt(timeInt);
+  meetingDataArray[timeInt - meetingDataArray.length].description = meetingText;
+  saveMeetingsToLocalStorage();
+}
 
 let meetingDataArray = [
   {
