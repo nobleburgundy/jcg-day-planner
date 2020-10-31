@@ -74,26 +74,7 @@ $(".fa-save").on("click", function () {
     timeBlockInt += 12;
   }
 
-  // update the object
-  meetingDataArray[timeBlockInt - meetingDataArray.length].description = cellContents;
-  // save to localStorage
-  saveMeetingsToLocalStorage();
-
-  // update classes
-  if (cellContents.length > 0) {
-    $(this).parent().parent().addClass("filled").removeClass("empty");
-    // Hide icon
-    $(this).addClass("d-none");
-    // Show trash icon
-    $(this).nextAll(".fa-trash").removeClass("d-none");
-  } else {
-    // If user clears the field and save, treat it like delete
-    $(this).parent().parent().removeClass("filled").addClass("empty");
-    // Hide icon
-    $(this).addClass("d-none");
-    // Hide trash icon
-    $(this).nextAll(".fa-trash").addClass("d-none");
-  }
+  saveRow(timeBlockInt);
 });
 
 $(document).on("click", ".fa-trash", function () {
@@ -108,13 +89,8 @@ $(".meeting-description").on("input", function () {
   $(this).on("keypress", function (event) {
     if (event.code === "Enter") {
       event.preventDefault();
-      // Save
       let timeRow = $(this).parent().attr("id");
-      saveMeeting(timeRow, $(this).text());
-      // Update class
-      $(this).next().children(".fa-save").addClass("d-none");
-      $(this).next().children(".fa-trash").removeClass("d-none");
-      $(this).parent().addClass("filled").removeClass("empty");
+      saveRow(timeRow);
     }
   });
 });
@@ -123,8 +99,18 @@ $(".meeting-description").on("input", function () {
 $("#clear-all").on("click", function () {
   if (confirm("Are you sure? This will delete ALL the meetings on the calendar.")) {
     for (let i = 0; i < meetingDataArray.length; i++) {
-      deleteRow(meetingDataArray[i].time);
+      let time = meetingDataArray[i].time;
+      if (time > parseInt(currentTime)) {
+        deleteRow(time);
+      }
     }
+  }
+});
+
+// Listen for Save All button
+$("#save-all").on("click", function () {
+  for (let i = 0; i < meetingDataArray.length; i++) {
+    saveRow(meetingDataArray[i].time);
   }
 });
 
@@ -145,15 +131,42 @@ function deleteRow(time) {
   rowEl.children(".meeting-description").text("");
   // update the class of the row
   rowEl.addClass("empty").removeClass("filled");
-  // hide icon
-  rowEl.children(".action").children(".fa-trash").addClass("d-none");
+  // hide icons
+  rowEl.children(".action").children(".fas").addClass("d-none");
   // Update the object
   meetingDataArray[time - meetingDataArray.length].description = "";
   // save to localStorage
   saveMeetingsToLocalStorage();
 }
 
-function saveMeeting(timeInt, meetingText) {
+function saveRow(time) {
+  // convert to int
+  time = parseInt(time);
+  currentTime = parseInt(currentTime);
+  // convert time to 24 hour
+  if (time < startTime) {
+    time += 12;
+  }
+  // store the row
+  let rowEl = $(`#${time}`);
+  // get the description
+  let description = rowEl.children(".meeting-description").text();
+  let rowClass = rowEl.attr("class");
+
+  // Only save if it's in the future, has a description entered, and has class 'empty'
+  if (time > currentTime && description && rowClass === "empty") {
+    // update the class of the row
+    rowEl.addClass("filled").removeClass("empty");
+    // hide save icon
+    rowEl.children(".action").children(".fa-save").addClass("d-none");
+    // show delete icon
+    rowEl.children(".action").children(".fa-trash").removeClass("d-none");
+    // save the meeting to the array and localStorage
+    saveMeetingData(time, description);
+  }
+}
+
+function saveMeetingData(timeInt, meetingText) {
   timeInt = parseInt(timeInt);
   meetingDataArray[timeInt - meetingDataArray.length].description = meetingText;
   saveMeetingsToLocalStorage();
