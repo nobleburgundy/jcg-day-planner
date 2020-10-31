@@ -19,9 +19,6 @@ function setRowClassesBasedOnTime() {
   // For comparison
   let currentTimeInt = parseInt(currentTime);
 
-  // Short Circuit for Testing...
-  currentTimeInt = 10;
-
   for (let i = 0; i < meetingDataArray.length; i++) {
     if (meetingDataArray[i].time < currentTimeInt) {
       $(`tr#${meetingDataArray[i].time}`).addClass(pastHoursClass);
@@ -51,7 +48,6 @@ function saveMeetingsToLocalStorage() {
 
 function loadMeetingsFromLocalStorage() {
   let localMeetingData = JSON.parse(localStorage.getItem("work-day-planner"));
-  console.log(localMeetingData);
   if (!localMeetingData) {
     // No data present, so just set to the empty meetingDataArray
     localMeetingData = meetingDataArray;
