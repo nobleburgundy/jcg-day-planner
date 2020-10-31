@@ -32,6 +32,7 @@ function setRowClassesBasedOnTime() {
       // green if open, blue if filled
       if (tdElement.text()) {
         $(`tr#${meetingDataArray[i].time}`).addClass(futureHourFilledClass);
+        $("#clear-all").removeClass("disabled");
         // show delete icon if there already is a meeting
         $(`tr#${meetingDataArray[i].time} td:nth-child(3)`).children(".fa-trash").removeClass("d-none");
       } else {
@@ -65,7 +66,6 @@ function loadMeetingsFromLocalStorage() {
 
 // listen for save click
 $(".fa-save").on("click", function () {
-  let cellContents = $(this).parent().prev().text();
   let timeBlock = $(this).parent().prevAll(".time").text();
   let timeBlockInt = parseInt(timeBlock);
 
@@ -85,6 +85,9 @@ $(document).on("click", ".fa-trash", function () {
 // Listen for input on the meeting description cell and show the save button when there's input
 $(".meeting-description").on("input", function () {
   $(this).next().children(".fa-save").removeClass("d-none");
+  $("#save-all").removeClass("disabled");
+  $("#clear-all").removeClass("disabled");
+
   // Listen for Enter key and save
   $(this).on("keypress", function (event) {
     if (event.code === "Enter") {
@@ -97,7 +100,7 @@ $(".meeting-description").on("input", function () {
 
 // Listen for Clear All button
 $("#clear-all").on("click", function () {
-  if (confirm("Are you sure? This will delete ALL the meetings on the calendar.")) {
+  if (confirm("Are you sure? This will delete all of the future meetings on the calendar.")) {
     for (let i = 0; i < meetingDataArray.length; i++) {
       let time = meetingDataArray[i].time;
       if (time > parseInt(currentTime)) {
@@ -105,6 +108,9 @@ $("#clear-all").on("click", function () {
       }
     }
   }
+  // Disable Clear All and Save All links
+  $("#clear-all").addClass("disabled");
+  $("#save-all").addClass("disabled");
 });
 
 // Listen for Save All button
@@ -113,10 +119,6 @@ $("#save-all").on("click", function () {
     saveRow(meetingDataArray[i].time);
   }
 });
-
-function getSaveIconCount() {
-  return $(".fa-save:visible").length;
-}
 
 function deleteRow(time) {
   // convert to int
@@ -154,9 +156,11 @@ function saveRow(time) {
   let rowClass = rowEl.attr("class");
 
   // Only save if it's in the future, has a description entered, and has class 'empty'
-  if (time > currentTime && description && rowClass === "empty") {
-    // update the class of the row
-    rowEl.addClass("filled").removeClass("empty");
+  if (time > currentTime && description) {
+    if (rowClass === "empty") {
+      // update the class of the row
+      rowEl.addClass("filled").removeClass("empty");
+    }
     // hide save icon
     rowEl.children(".action").children(".fa-save").addClass("d-none");
     // show delete icon
