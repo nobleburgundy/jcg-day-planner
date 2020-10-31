@@ -18,7 +18,6 @@ function setRowClassesBasedOnTime() {
   let futureHourFilledClass = "filled";
   // For comparison
   let currentTimeInt = parseInt(currentTime);
-  console.log(currentTimeInt);
 
   for (let i = 0; i < meetingDataArray.length; i++) {
     if (meetingDataArray[i].time < currentTimeInt) {
@@ -120,6 +119,19 @@ $(".meeting-description").on("input", function () {
   });
 });
 
+// Listen for Clear All button
+$("#clear-all").on("click", function () {
+  if (confirm("Are you sure? This will delete ALL the meetings on the calendar.")) {
+    for (let i = 0; i < meetingDataArray.length; i++) {
+      deleteRow(meetingDataArray[i].time);
+    }
+  }
+});
+
+function getSaveIconCount() {
+  return $(".fa-save:visible").length;
+}
+
 function deleteRow(time) {
   // convert to int
   time = parseInt(time);
@@ -140,11 +152,6 @@ function deleteRow(time) {
   // save to localStorage
   saveMeetingsToLocalStorage();
 }
-
-$(".time").on("dblclick", function () {
-  currentTime = parseInt($(this).text());
-  setRowClassesBasedOnTime();
-});
 
 function saveMeeting(timeInt, meetingText) {
   timeInt = parseInt(timeInt);
