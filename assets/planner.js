@@ -77,6 +77,7 @@ $(".fa-save").on("click", function () {
   saveRow(timeBlockInt);
 });
 
+// Listen for delete click
 $(document).on("click", ".fa-trash", function () {
   let time = $(this).parent().prevAll(".time").text();
   deleteRow(time);
@@ -118,6 +119,12 @@ $("#save-all").on("click", function () {
   for (let i = 0; i < meetingDataArray.length; i++) {
     saveRow(meetingDataArray[i].time);
   }
+});
+
+// Cheater function to short-circuit current time for testing
+$(document).on("dblclick", ".time", function () {
+  currentTime = parseInt($(this).text());
+  setRowClassesBasedOnTime();
 });
 
 function deleteRow(time) {
