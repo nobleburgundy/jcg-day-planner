@@ -1,3 +1,15 @@
+th.time, th.action {
+    width: 15%;
+}
+
+th.time {
+    min-width: 75px;
+}
+
+th.meeting-description {
+    width: 70%;
+}
+
 /* Center the Action Column */
 tr :nth-child(3) {
     text-align: center;
