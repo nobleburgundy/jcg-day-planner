@@ -124,6 +124,12 @@ $("#save-all").on("click", function () {
 // Cheater function to short-circuit current time for testing
 $(document).on("dblclick", ".time", function () {
   currentTime = parseInt($(this).text());
+  // remove 'past' classes for this testing function if > currentTime
+  for (let i = 0; i < meetingDataArray.length; i++) {
+    if (meetingDataArray[i].time > currentTime) {
+      $(`tr#${meetingDataArray[i].time}`).removeClass("past");
+    }
+  }
   setRowClassesBasedOnTime();
 });
 
