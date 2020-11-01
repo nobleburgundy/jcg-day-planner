@@ -108,10 +108,10 @@ $("#clear-all").on("click", function () {
         deleteRow(time);
       }
     }
+    // Disable Clear All and Save All links
+    $("#clear-all").addClass("disabled");
+    $("#save-all").addClass("disabled");
   }
-  // Disable Clear All and Save All links
-  $("#clear-all").addClass("disabled");
-  $("#save-all").addClass("disabled");
 });
 
 // Listen for Save All button
